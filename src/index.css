@@ -1,52 +1,79 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #f0f9ff;
+  --color-brand-100: #e0f2fe;
+  --color-brand-200: #bae6fd;
+  --color-brand-300: #7dd3fc;
+  --color-brand-400: #38bdf8;
+  --color-brand-500: #0ea5e9;
+  --color-brand-600: #0284c7;
+  --color-brand-700: #0369a1;
+  --color-brand-800: #075985;
+  --color-brand-900: #0c4a6e;
+  --color-brand-950: #082f49;
+}
 
 :root {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
   background-color: #050505;
-  color: #fff;
+  color: #ffffff;
 }
 
 body {
   margin: 0;
-  overflow: hidden;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.glass-panel {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Custom Utilities */
+.glass {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10;
 }
 
-.glass-card {
-  background: rgba(10, 10, 10, 0.6);
-  backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.glass-darker {
+  @apply bg-black/40 backdrop-blur-2xl border border-white/5;
 }
 
-.glow-blue {
-  box-shadow: 0 0 40px rgba(37, 99, 235, 0.2);
+.neo-blur {
+  @apply backdrop-blur-3xl;
 }
 
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.1); }
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 8s ease-in-out infinite;
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-/* Monaco Editor Overrides */
-.monaco-editor, .monaco-editor .margin, .monaco-editor-background {
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Monaco Customization */
+.monaco-editor,
+.monaco-editor .margin,
+.monaco-editor-background {
   background-color: transparent !important;
 }
 
-/* Custom Scrollbar */
+/* Hide scrollbars but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -54,4 +81,7 @@ body {
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
