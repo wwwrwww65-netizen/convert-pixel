@@ -46,12 +46,23 @@ const App = () => {
   const [targetFramework, setTargetFramework] = useState('flutter');
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [activeTab, setActiveTab] = useState('code');
+  const [mobileActiveTab, setMobileActiveTab] = useState('input');
   const [isConverting, setIsConverting] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [splitWidth, setSplitWidth] = useState(50);
   const [deviceMode, setDeviceMode] = useState('mobile');
+  const [isMobile, setIsMobile] = useState(false);
 
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   const isDragging = useRef(false);
 
   useEffect(() => {
@@ -143,48 +154,74 @@ const App = () => {
           </h1>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <div className="flex items-center gap-1 p-1 bg-white/5 rounded-lg border border-white/10">
-            <button onClick={() => setIsDarkMode(true)} className={`p-1.5 rounded-md transition-all ${isDarkMode ? 'bg-white/10 text-blue-400' : 'text-white/40 hover:text-white'}`}><Moon size={16}/></button>
-            <button onClick={() => setIsDarkMode(false)} className={`p-1.5 rounded-md transition-all ${!isDarkMode ? 'bg-black/10 text-blue-600' : 'text-white/40 hover:text-white'}`}><Sun size={16}/></button>
+            <button onClick={() => setIsDarkMode(true)} className={`p-1.5 rounded-md transition-all ${isDarkMode ? 'bg-white/10 text-blue-400' : 'text-white/40 hover:text-white'}`}><Moon size={14} className="sm:w-4 sm:h-4" /></button>
+            <button onClick={() => setIsDarkMode(false)} className={`p-1.5 rounded-md transition-all ${!isDarkMode ? 'bg-black/10 text-blue-600' : 'text-white/40 hover:text-white'}`}><Sun size={14} className="sm:w-4 sm:h-4" /></button>
           </div>
-          <button className="hidden sm:flex items-center gap-2 px-5 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all font-bold text-xs uppercase tracking-wider shadow-lg active:scale-95">
+          <button className="flex items-center gap-2 px-3 sm:px-5 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all font-bold text-[10px] sm:text-xs uppercase tracking-wider shadow-lg active:scale-95">
             <Share2 size={14} />
-            Share
+            <span className="hidden xs:inline">Share</span>
           </button>
         </div>
       </header>
 
       {/* Control Bar */}
-      <div className="relative z-40 bg-white/5 border-b border-white/5 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="flex flex-col">
-            <span className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">Source Language</span>
-            <select
-              value={sourceLanguage}
-              onChange={(e) => setSourceLanguage(e.target.value)}
-              className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-blue-500 transition-colors"
+      <div className="relative z-40 bg-white/5 border-b border-white/5 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+        {/* Mobile Tab Switcher */}
+        {isMobile && (
+          <div className="w-full flex p-1 bg-white/5 rounded-xl border border-white/10 mb-2">
+            <button
+              onClick={() => setMobileActiveTab('input')}
+              className={`flex-1 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${mobileActiveTab === 'input' ? 'bg-blue-600 text-white shadow-lg' : 'text-white/40'}`}
             >
-              {sources.map(s => <option key={s.id} value={s.id} className="bg-[#121212]">{s.name}</option>)}
-            </select>
+              INPUT
+            </button>
+            <button
+              onClick={() => setMobileActiveTab('output')}
+              className={`flex-1 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${mobileActiveTab === 'output' ? 'bg-blue-600 text-white shadow-lg' : 'text-white/40'}`}
+            >
+              OUTPUT
+            </button>
+            <button
+              onClick={() => setMobileActiveTab('preview')}
+              className={`flex-1 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${mobileActiveTab === 'preview' ? 'bg-blue-600 text-white shadow-lg' : 'text-white/40'}`}
+            >
+              PREVIEW
+            </button>
           </div>
+        )}
 
-          <div className="flex items-center mt-4">
-            <ArrowRight className="text-white/20" size={20} />
-          </div>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full lg:w-auto">
+          <div className="flex items-center gap-4 w-full sm:w-auto">
+            <div className="flex flex-col flex-1 sm:flex-initial">
+              <span className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">Source</span>
+              <select
+                value={sourceLanguage}
+                onChange={(e) => setSourceLanguage(e.target.value)}
+                className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-[10px] sm:text-xs font-bold focus:outline-none focus:border-blue-500 transition-colors w-full"
+              >
+                {sources.map(s => <option key={s.id} value={s.id} className="bg-[#121212]">{s.name}</option>)}
+              </select>
+            </div>
 
-          <div className="flex flex-col">
-            <span className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">Target Framework</span>
-            <div className="flex items-center gap-1 bg-white/5 p-1 rounded-lg border border-white/10 overflow-x-auto no-scrollbar">
-              {targets.map((fw) => (
-                <button
-                  key={fw.id}
-                  onClick={() => setTargetFramework(fw.id)}
-                  className={`px-4 py-1 rounded-md text-[10px] font-black uppercase tracking-widest transition-all ${targetFramework === fw.id ? 'bg-blue-600 text-white shadow-lg' : 'text-white/40 hover:text-white'}`}
-                >
-                  {fw.name}
-                </button>
-              ))}
+            <div className="flex items-center mt-4 shrink-0">
+              <ArrowRight className="text-white/20" size={16} />
+            </div>
+
+            <div className="flex flex-col flex-1 sm:flex-initial">
+              <span className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">Target</span>
+              <div className="flex items-center gap-1 bg-white/5 p-1 rounded-lg border border-white/10 overflow-x-auto no-scrollbar">
+                {targets.map((fw) => (
+                  <button
+                    key={fw.id}
+                    onClick={() => setTargetFramework(fw.id)}
+                    className={`px-2 sm:px-4 py-1 rounded-md text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all shrink-0 ${targetFramework === fw.id ? 'bg-blue-600 text-white shadow-lg' : 'text-white/40 hover:text-white'}`}
+                  >
+                    {fw.name}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -192,7 +229,7 @@ const App = () => {
         <button
           onClick={handleConvert}
           disabled={isConverting}
-          className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-sm uppercase tracking-[0.2em] shadow-2xl shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+          className="w-full lg:w-auto flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs sm:text-sm uppercase tracking-[0.2em] shadow-2xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
         >
           {isConverting ? <Cpu className="animate-spin" size={18} /> : <Play fill="currentColor" size={18} />}
           CONVERT NOW
@@ -203,7 +240,10 @@ const App = () => {
       <main ref={containerRef} className="relative z-10 flex flex-col lg:flex-row flex-1 overflow-hidden">
 
         {/* Left Panel: Input */}
-        <div className="flex flex-col border-r border-white/5 bg-black/10 w-full lg:w-auto" style={{ width: window.innerWidth >= 1024 ? splitWidth + '%' : '100%', minWidth: window.innerWidth >= 1024 ? '300px' : 'auto' }}>
+        <div
+          className={`flex-col border-r border-white/5 bg-black/10 ${isMobile ? (mobileActiveTab === 'input' ? 'flex flex-1' : 'hidden') : 'flex'}`}
+          style={{ width: !isMobile ? splitWidth + '%' : '100%', minWidth: !isMobile ? '300px' : 'auto' }}
+        >
           <div className="flex items-center justify-between px-6 py-4 flex-shrink-0 bg-white/5">
              <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500 border border-blue-500/20">
@@ -214,10 +254,25 @@ const App = () => {
                   <span className="text-xs font-bold text-white uppercase">{sourceLanguage}</span>
                 </div>
              </div>
-             <span className="text-[9px] font-bold text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">READY</span>
+             <div className="flex items-center gap-2">
+                <button
+                  onClick={async () => {
+                    try {
+                      const text = await navigator.clipboard.readText();
+                      setInputCode(text);
+                    } catch (err) {
+                      console.error('Failed to read clipboard', err);
+                    }
+                  }}
+                  className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-[10px] font-black text-white/70 hover:text-white transition-all"
+                >
+                  PASTE
+                </button>
+                <span className="text-[9px] font-bold text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">READY</span>
+             </div>
           </div>
 
-          <div className="flex-1">
+          <div className={`flex-1 min-h-[400px] ${isMobile ? 'bg-black/40 border-y border-white/5' : ''}`}>
              <Editor
                 height="100%"
                 defaultLanguage="html"
@@ -234,6 +289,11 @@ const App = () => {
                   lineNumbers: 'on',
                   padding: { top: 24, bottom: 24 },
                   scrollBeyondLastLine: false,
+                  automaticLayout: true,
+                  fixedOverflowWidgets: true,
+                  formatOnPaste: true,
+                  wordWrap: 'on',
+                  domReadOnly: false,
                 }}
              />
           </div>
@@ -248,23 +308,25 @@ const App = () => {
         </div>
 
         {/* Right Panel: Output & Preview */}
-        <div className="flex flex-col flex-1 overflow-hidden bg-[#0a0a0a]/50">
+        <div className={`flex-col flex-1 overflow-hidden bg-[#0a0a0a]/50 ${isMobile ? (mobileActiveTab !== 'input' ? 'flex' : 'hidden') : 'flex'}`}>
            <div className="flex items-center justify-between px-6 py-3 flex-shrink-0 border-b border-white/5 bg-white/5">
               <div className="flex items-center gap-4">
-                 <div className="flex p-1 bg-black/20 rounded-xl border border-white/10">
-                    <button
-                      onClick={() => setActiveTab('code')}
-                      className={`px-6 py-1.5 rounded-lg text-[10px] font-black tracking-widest transition-all ${activeTab === 'code' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
-                    >
-                      OUTPUT CODE
-                    </button>
-                    <button
-                      onClick={() => setActiveTab('preview')}
-                      className={`px-6 py-1.5 rounded-lg text-[10px] font-black tracking-widest transition-all ${activeTab === 'preview' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
-                    >
-                      LIVE PREVIEW
-                    </button>
-                 </div>
+                 {!isMobile && (
+                   <div className="flex p-1 bg-black/20 rounded-xl border border-white/10">
+                      <button
+                        onClick={() => setActiveTab('code')}
+                        className={`px-6 py-1.5 rounded-lg text-[10px] font-black tracking-widest transition-all ${activeTab === 'code' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                      >
+                        OUTPUT CODE
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('preview')}
+                        className={`px-6 py-1.5 rounded-lg text-[10px] font-black tracking-widest transition-all ${activeTab === 'preview' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                      >
+                        LIVE PREVIEW
+                      </button>
+                   </div>
+                 )}
                  <div className="flex flex-col">
                     <span className="text-[9px] font-black tracking-widest uppercase text-white/40">Target</span>
                     <span className="text-xs font-bold text-white uppercase">{targetFramework}</span>
@@ -292,7 +354,7 @@ const App = () => {
 
            <div className="flex-1 relative overflow-hidden">
               <AnimatePresence mode="wait">
-                 {activeTab === 'code' ? (
+                 {(isMobile ? mobileActiveTab === 'output' : activeTab === 'code') ? (
                     <motion.div
                       key="code"
                       initial={{ opacity: 0, x: 20 }}
@@ -311,6 +373,8 @@ const App = () => {
                             fontSize: 14,
                             padding: { top: 24, bottom: 24 },
                             fontFamily: 'JetBrains Mono',
+                            automaticLayout: true,
+                            fixedOverflowWidgets: true,
                           }}
                        />
                     </motion.div>
