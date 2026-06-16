@@ -37,6 +37,9 @@ export const tailwindToFlutter = {
   // Colors (Standard Tailwind Palette)
   'bg-blue-600': { decoration: 'color', value: 'Color(0xFF2563EB)' },
   'bg-blue-500': { decoration: 'color', value: 'Color(0xFF3B82F6)' },
+  'bg-indigo-600': { decoration: 'color', value: 'Color(0xFF4F46E5)' },
+  'bg-slate-800': { decoration: 'color', value: 'Color(0xFF1E293B)' },
+  'bg-slate-900': { decoration: 'color', value: 'Color(0xFF0F172A)' },
   'bg-white': { decoration: 'color', value: 'Colors.white' },
   'bg-black': { decoration: 'color', value: 'Colors.black' },
   'bg-transparent': { decoration: 'color', value: 'Colors.transparent' },
@@ -44,6 +47,7 @@ export const tailwindToFlutter = {
   'text-white': { style: 'color', value: 'Colors.white' },
   'text-black': { style: 'color', value: 'Colors.black' },
   'text-blue-600': { style: 'color', value: 'Color(0xFF2563EB)' },
+  'text-blue-100': { style: 'color', value: 'Color(0xFFDBEAFE)' },
   'text-gray-400': { style: 'color', value: 'Color(0xFF9CA3AF)' },
   'text-slate-400': { style: 'color', value: 'Color(0xFF94A3B8)' },
 
@@ -55,6 +59,8 @@ export const tailwindToFlutter = {
   'text-xl': { style: 'fontSize', value: '20.0' },
   'text-2xl': { style: 'fontSize', value: '24.0' },
   'text-3xl': { style: 'fontSize', value: '30.0' },
+  'text-4xl': { style: 'fontSize', value: '36.0' },
+  'text-5xl': { style: 'fontSize', value: '48.0' },
 
   'font-thin': { style: 'fontWeight', value: 'FontWeight.w100' },
   'font-light': { style: 'fontWeight', value: 'FontWeight.w300' },
@@ -63,6 +69,12 @@ export const tailwindToFlutter = {
   'font-semibold': { style: 'fontWeight', value: 'FontWeight.w600' },
   'font-bold': { style: 'fontWeight', value: 'FontWeight.bold' },
   'font-black': { style: 'fontWeight', value: 'FontWeight.w900' },
+
+  'tracking-tight': { style: 'letterSpacing', value: '-0.5' },
+  'tracking-tighter': { style: 'letterSpacing', value: '-1.0' },
+  'tracking-wide': { style: 'letterSpacing', value: '0.5' },
+  'tracking-wider': { style: 'letterSpacing', value: '1.0' },
+  'tracking-widest': { style: 'letterSpacing', value: '2.0' },
 
   // Borders
   'rounded-none': { decoration: 'borderRadius', value: 'BorderRadius.zero' },

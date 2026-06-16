@@ -1,5 +1,5 @@
 import { Parser } from 'htmlparser2';
-import { tailwindToFlutter, tailwindToReactNative } from './mappings';
+import { tailwindToFlutter, tailwindToReactNative } from './mappings.js';
 
 export class ConversionEngine {
   constructor(targetFramework) {

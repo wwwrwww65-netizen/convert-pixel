@@ -92,9 +92,22 @@ const App = () => {
   };
 
   const copyToClipboard = () => {
+    if (!outputCode) return;
     navigator.clipboard.writeText(outputCode);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  const downloadFile = () => {
+    if (!outputCode) return;
+    const extension = targetFramework === 'flutter' ? 'dart' : targetFramework === 'html' ? 'html' : 'js';
+    const blob = new Blob([outputCode], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `pixel_perfect_component.${extension}`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const targets = [
@@ -258,13 +271,23 @@ const App = () => {
                  </div>
               </div>
 
-              <button
-                onClick={copyToClipboard}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all ${isCopied ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-500' : 'border-white/10 hover:bg-white/5 text-white/70 hover:text-white'}`}
-              >
-                  {isCopied ? <CheckCircle2 size={14} /> : <Copy size={14} />}
-                  <span className="text-[10px] font-black">{isCopied ? 'COPIED' : 'COPY RESULT'}</span>
-              </button>
+              <div className="flex items-center gap-2">
+                  <button
+                    onClick={downloadFile}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 hover:bg-white/5 text-white/70 hover:text-white transition-all"
+                    title="Download as File"
+                  >
+                      <Download size={14} />
+                      <span className="text-[10px] font-black hidden sm:inline">DOWNLOAD</span>
+                  </button>
+                  <button
+                    onClick={copyToClipboard}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all ${isCopied ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-500' : 'border-white/10 hover:bg-white/5 text-white/70 hover:text-white'}`}
+                  >
+                      {isCopied ? <CheckCircle2 size={14} /> : <Copy size={14} />}
+                      <span className="text-[10px] font-black">{isCopied ? 'COPIED' : 'COPY RESULT'}</span>
+                  </button>
+              </div>
            </div>
 
            <div className="flex-1 relative overflow-hidden">
@@ -304,8 +327,16 @@ const App = () => {
                           <button onClick={() => setDeviceMode('desktop')} className={`p-2 rounded-xl transition-all ${deviceMode === 'desktop' ? 'bg-blue-600 text-white shadow-lg' : 'text-white/40'}`}><Monitor size={18}/></button>
                        </div>
 
-                       <div className={`relative transition-all duration-700 ease-in-out ${deviceMode === 'mobile' ? 'w-[320px] h-[580px]' : 'w-full max-w-[900px] h-[500px]'} bg-black rounded-[3rem] border-[12px] border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.5)] overflow-hidden`}>
-                          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-white/10 rounded-b-2xl z-20" />
+                       <div className={`relative transition-all duration-700 ease-in-out ${deviceMode === 'mobile' ? 'w-[320px] h-[580px] rounded-[3rem] border-[12px]' : 'w-full max-w-[1000px] h-full rounded-t-xl border-t-[32px] border-x-[8px]'} bg-black border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.5)] overflow-hidden`}>
+                          {deviceMode === 'mobile' ? (
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-white/10 rounded-b-2xl z-20" />
+                          ) : (
+                            <div className="absolute top-[-24px] left-4 flex gap-1.5 z-20">
+                               <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+                               <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
+                               <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
+                            </div>
+                          )}
                           <div className="absolute inset-0 overflow-auto bg-[#0a0a0a] p-6 no-scrollbar">
                              <div
                                dangerouslySetInnerHTML={{ __html: inputCode }}
